@@ -35,6 +35,9 @@ public class Game {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 
+	@Column
+	private String userName;
+
 	@Column(name = "rows_quantity", nullable = false, length = 11)
 	private Long rows;
 
