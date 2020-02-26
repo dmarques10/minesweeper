@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.deviget.minesweeper.repository.model.Cell;
 import com.deviget.minesweeper.repository.model.GameStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -23,5 +22,5 @@ public class GameBean {
 	private Long columns;
 	private Long mines;
 	private GameStatus gameStatus;
-	private List<Cell> cells;
+	private List<CellBean> cells;
 }
