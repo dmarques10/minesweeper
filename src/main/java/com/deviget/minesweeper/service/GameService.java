@@ -8,4 +8,8 @@ public interface GameService {
 	GameBean createGame(BoardRequest request);
 
 	GameBean play(String userName, PlayRequest request);
+
+	void pause(String userName);
+
+	void resume(String userName);
 }

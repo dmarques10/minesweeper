@@ -1,5 +1,9 @@
 package com.deviget.minesweeper.service.impl;
 
+import static com.deviget.minesweeper.repository.model.GameStatus.ACTIVE;
+import static com.deviget.minesweeper.repository.model.GameStatus.FINISHED_STATUS;
+import static com.deviget.minesweeper.repository.model.GameStatus.PAUSE;
+
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +18,6 @@ import com.deviget.minesweeper.mapper.CellMapper;
 import com.deviget.minesweeper.mapper.GameMapper;
 import com.deviget.minesweeper.repository.GameRepository;
 import com.deviget.minesweeper.repository.model.Game;
-import com.deviget.minesweeper.repository.model.GameStatus;
 import com.deviget.minesweeper.request.BoardRequest;
 import com.deviget.minesweeper.request.GameOperation;
 import com.deviget.minesweeper.request.PlayRequest;
@@ -32,12 +35,12 @@ public class GameServiceImpl implements GameService {
 
 	@Override
 	public GameBean createGame(BoardRequest request) {
-		if (gameRepository.findByUserNameAndGameStatus(request.getUserName(), GameStatus.ACTIVE).isPresent()) {
+		if (gameRepository.findByUserNameAndGameStatus(request.getUserName(), ACTIVE).isPresent()) {
 			throw new MinesweeperException(String.format("[Minesweeper Service] - Already exists a game for username=%s", request.getUserName()));
 		}
 		List<CellBean> cells = cellService.createCells(request);
 		Game game = Game.builder()
-			.gameStatus(GameStatus.ACTIVE)
+			.gameStatus(ACTIVE)
 			.cells(cellMapper.mapToEntities(cells))
 			.columns(request.getColumns())
 			.rows(request.getRows())
@@ -49,7 +52,7 @@ public class GameServiceImpl implements GameService {
 
 	@Override
 	public GameBean play(String userName, PlayRequest request) {
-		GameBean gameBean = gameRepository.findByUserNameAndGameStatus(userName, GameStatus.ACTIVE).map(game -> gameMapper.mapToBean(game))
+		GameBean gameBean = gameRepository.findByUserNameAndGameStatus(userName, ACTIVE).map(game -> gameMapper.mapToBean(game))
 			.orElseThrow(() -> new GameNotFoundException(userName));
 
 		GameOperation gameOperation = GameOperation.builder()
@@ -61,7 +64,23 @@ public class GameServiceImpl implements GameService {
 
 
 		List<CellBean> cellBeans = cellService.operation(gameOperation);
-
+		//TODO: check if is finish
 		return null;
+	}
+
+	@Override
+	public void pause(String userName) {
+		gameRepository.findByUserNameAndGameStatusNotIn(userName, FINISHED_STATUS)
+			.orElseThrow(() -> new GameNotFoundException(userName));
+
+		gameRepository.updateGameStatusByUserName(PAUSE, userName);
+	}
+
+	@Override
+	public void resume(String userName) {
+		gameRepository.findByUserNameAndGameStatusNotIn(userName, FINISHED_STATUS)
+			.orElseThrow(() -> new GameNotFoundException(userName));
+
+		gameRepository.updateGameStatusByUserName(ACTIVE, userName);
 	}
 }

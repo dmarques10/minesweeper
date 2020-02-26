@@ -1,6 +1,7 @@
 package com.deviget.minesweeper.controller;
 
 import javax.validation.Valid;
+import javax.ws.rs.core.MediaType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,20 +22,36 @@ import com.deviget.minesweeper.service.GameService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1minesweeper/")
+@RequestMapping(value = "/api/v1minesweeper/", produces = MediaType.APPLICATION_JSON)
 @Validated
 @Slf4j
 public class MineSweeperController {
 
 	private final GameService gameService;
 
-	@PostMapping(value = "/create", consumes = "application/json")
+	@PostMapping(value = "/create", consumes = "application/json", produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<GameBean> createGame(@Valid @RequestBody BoardRequest request) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(gameService.createGame(request));
 	}
 
-	@PostMapping(value = "/play/{userName}",  consumes = "application/json")
+	@PostMapping(value = "/play/{userName}", consumes = "application/json", produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity playGame(@Valid @RequestBody PlayRequest request, @PathVariable String userName) {
-			return ResponseEntity.ok(gameService.play(userName, request));
+		return ResponseEntity.ok(gameService.play(userName, request));
+	}
+
+	@PostMapping(path = "/{userName}/pause", produces = MediaType.APPLICATION_JSON)
+	public ResponseEntity pause(@PathVariable String userName) {
+		log.info("Received request to pause game with userName={}", userName);
+
+		gameService.pause(userName);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping(path = "/{userName}/resume", produces = MediaType.APPLICATION_JSON)
+	public ResponseEntity resume(@PathVariable String userName) {
+		log.info("Received request to resume game with userName={}", userName);
+
+		gameService.resume(userName);
+		return ResponseEntity.ok().build();
 	}
 }
