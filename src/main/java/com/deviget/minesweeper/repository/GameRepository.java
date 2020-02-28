@@ -17,5 +17,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
 	@Modifying
 	@Query("UPDATE Game g SET g.gameStatus = :gameStatus WHERE g.userName = :userName")
-	void updateGameStatusByUserName(GameStatus gameStatus, String userName);
+	Game updateGameStatusByUserName(GameStatus gameStatus, String userName);
+
+	Optional<Game> findByUserName(String userName);
 }

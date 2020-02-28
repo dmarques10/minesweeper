@@ -7,4 +7,6 @@ import com.deviget.minesweeper.repository.model.Cell;
 
 public interface CellMapper {
 	List<Cell> mapToEntities(List<CellBean> cells);
+
+	Cell mapToEntity(CellBean cell);
 }

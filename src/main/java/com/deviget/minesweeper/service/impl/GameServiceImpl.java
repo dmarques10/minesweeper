@@ -17,7 +17,11 @@ import com.deviget.minesweeper.exception.MinesweeperException;
 import com.deviget.minesweeper.mapper.CellMapper;
 import com.deviget.minesweeper.mapper.GameMapper;
 import com.deviget.minesweeper.repository.GameRepository;
+import com.deviget.minesweeper.repository.model.Cell;
+import com.deviget.minesweeper.repository.model.CellContent;
+import com.deviget.minesweeper.repository.model.CellOperation;
 import com.deviget.minesweeper.repository.model.Game;
+import com.deviget.minesweeper.repository.model.GameStatus;
 import com.deviget.minesweeper.request.BoardRequest;
 import com.deviget.minesweeper.request.GameOperation;
 import com.deviget.minesweeper.request.PlayRequest;
@@ -50,6 +54,7 @@ public class GameServiceImpl implements GameService {
 		return gameMapper.mapToBean(gameRepository.save(game));
 	}
 
+	//TODO: check response
 	@Override
 	public GameBean play(String userName, PlayRequest request) {
 		GameBean gameBean = gameRepository.findByUserNameAndGameStatus(userName, ACTIVE).map(game -> gameMapper.mapToBean(game))
@@ -62,10 +67,38 @@ public class GameServiceImpl implements GameService {
 			.column(request.getColumn())
 			.build();
 
+		try {
 
-		List<CellBean> cellBeans = cellService.operation(gameOperation);
-		//TODO: check if is finish
-		return null;
+			List<CellBean> cellBeans = cellService.operation(gameOperation);
+			if (gameIsFinished(userName)) {
+				final Game game = gameRepository.updateGameStatusByUserName(GameStatus.WON, userName);
+				return gameMapper.mapToBean(game);
+			}
+
+			//TODO: check response
+			gameBean.setCells(cellBeans);
+			return gameBean;
+		} catch (MineExplodedException e) {
+
+			final Game game = gameRepository.updateGameStatusByUserName(GameStatus.LOST, userName);
+			return gameMapper.mapToBean(game);
+		}
+	}
+
+	boolean gameIsFinished(String userName) {
+		return gameRepository.findByUserName(userName)
+			.map(Game::getCells)
+			.orElseThrow(() -> new GameNotFoundException(userName))
+			.stream()
+			.noneMatch(cell -> isMineAndNotFlagged(cell) || isNumberAndNotRevealed(cell));
+	}
+
+	boolean isMineAndNotFlagged(Cell cell) {
+		return CellContent.MINE.equals(cell.getCellContent()) && !CellOperation.FLAGGED.equals(cell.getCellOperation());
+	}
+
+	boolean isNumberAndNotRevealed(Cell cell) {
+		return CellContent.NUMBER.equals(cell.getCellContent()) && !CellOperation.REVEALED.equals(cell.getCellOperation());
 	}
 
 	@Override

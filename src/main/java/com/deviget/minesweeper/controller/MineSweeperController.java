@@ -22,7 +22,7 @@ import com.deviget.minesweeper.service.GameService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1minesweeper/", produces = MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api/v1/minesweeper/", produces = MediaType.APPLICATION_JSON)
 @Validated
 @Slf4j
 public class MineSweeperController {

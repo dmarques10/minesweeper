@@ -99,7 +99,7 @@ public class CellServiceImpl implements CellService {
 		});
 
 		return alreadyOccupiedCells.stream()
-			.map(this::mapToGameCellBean)
+			.map(this::mapToCellBean)
 			.collect(Collectors.toList());
 	}
 
@@ -119,7 +119,7 @@ public class CellServiceImpl implements CellService {
 		return Pair.of(randomRow, randomColumn);
 	}
 
-	CellBean mapToGameCellBean(Pair<Long, Long> pair) {
+	CellBean mapToCellBean(Pair<Long, Long> pair) {
 		return CellBean.builder()
 			.row(pair.getLeft())
 			.column(pair.getRight())
@@ -163,11 +163,11 @@ public class CellServiceImpl implements CellService {
 			});
 	}
 
-	List<CellBean> obtainCellAndApplyFunction(GameOperation gameCellOperation,
+	List<CellBean> obtainCellAndApplyFunction(GameOperation gameOperation,
 																						Function<CellBean, List<CellBean>> function) {
-		Long row = gameCellOperation.getRow();
-		Long column = gameCellOperation.getColumn();
-		GameBean gameBean = gameCellOperation.getGameBean();
+		Long row = gameOperation.getRow();
+		Long column = gameOperation.getColumn();
+		GameBean gameBean = gameOperation.getGameBean();
 
 		// We update the status from it in the DB
 		CellBean cell = getCellFromPosition(gameBean, row, column)
@@ -202,9 +202,9 @@ public class CellServiceImpl implements CellService {
 			column.longValue() == cellBean.getColumn().longValue();
 	}
 
-	List<CellBean> populateMinesAround(CellBean gameCellBean, GameBean gameBean) {
-		long row = gameCellBean.getRow();
-		long column = gameCellBean.getColumn();
+	List<CellBean> populateMinesAround(CellBean cellBean, GameBean gameBean) {
+		long row = cellBean.getRow();
+		long column = cellBean.getColumn();
 
 		// Check every possible direction (8 in total) and counting how many mines there are
 		Stream<Boolean> results = buildPossibleDirections(row, column).stream()
@@ -213,24 +213,24 @@ public class CellServiceImpl implements CellService {
 			.filter(Boolean::booleanValue)
 			.count();
 
-		gameCellBean.setCellOperation(CellOperation.REVEALED);
-		gameCellBean.setMinesAround(minesAround);
+		cellBean.setCellOperation(CellOperation.REVEALED);
+		cellBean.setMinesAround(minesAround);
 
-		List<CellBean> result = Arrays.asList(gameCellBean);
-		if (gameCellBean.getMinesAround().intValue() == 0) {
-			List<CellBean> newcells = buildCellsAround(gameCellBean, gameBean)
+		List<CellBean> result = Arrays.asList(cellBean);
+		if (cellBean.getMinesAround().intValue() == 0) {
+			List<CellBean> cellBeans = buildCellsAround(cellBean, gameBean)
 				.filter(c -> CellOperation.NONE.equals(c.getCellOperation()))
 				.map(c -> populateMinesAround(c, gameBean))
 				.flatMap(Collection::stream)
 				.collect(Collectors.toList());
-			result.addAll(newcells);
+			result.addAll(cellBeans);
 		}
 
 		return result;
 	}
 
-	Stream<CellBean> buildCellsAround(CellBean gameCellBean, GameBean gameBean) {
-		return buildPossibleDirections(gameCellBean.getRow(), gameCellBean.getColumn())
+	Stream<CellBean> buildCellsAround(CellBean cellBean, GameBean gameBean) {
+		return buildPossibleDirections(cellBean.getRow(), cellBean.getColumn())
 			.stream()
 			.map(direction -> getCellFromPosition(gameBean, direction.getLeft(), direction.getRight()))
 			.flatMap(Optional::stream);
@@ -241,9 +241,9 @@ public class CellServiceImpl implements CellService {
 			return false;
 		}
 
-		return gameBean.getCells().stream().anyMatch(gameCellBean ->
-			isMine(gameCellBean) &&
-				hasPosition(gameCellBean, rowColumnPair.getLeft(), rowColumnPair.getRight()));
+		return gameBean.getCells().stream().anyMatch(cellBean ->
+			isMine(cellBean) &&
+				hasPosition(cellBean, rowColumnPair.getLeft(), rowColumnPair.getRight()));
 	}
 
 	List<Pair<Long, Long>> buildPossibleDirections(Long row, Long column) {
