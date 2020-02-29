@@ -29,10 +29,10 @@ public class Cell {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 
-	@Column(name = "row_number", nullable = false, length = 11)
+	@Column(name = "`row_number`", nullable = false, length = 11)
 	private Long row;
 
-	@Column(name = "col_number", nullable = false, length = 11)
+	@Column(name = "`col_number`", nullable = false, length = 11)
 	private Long column;
 
 	@Enumerated(EnumType.STRING)

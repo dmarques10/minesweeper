@@ -36,4 +36,9 @@ public class CellMapperImpl implements CellMapper {
 	public Cell mapToEntity(CellBean cell) {
 		return facade.map(cell, Cell.class);
 	}
+
+	@Override
+	public CellBean mapToBean(Cell cell) {
+		return facade.map(cell, CellBean.class);
+	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deviget.minesweeper.bean.CellBean;
 import com.deviget.minesweeper.bean.GameBean;
@@ -38,14 +39,16 @@ public class GameServiceImpl implements GameService {
 	private final GameMapper gameMapper;
 
 	@Override
+	@Transactional
 	public GameBean createGame(BoardRequest request) {
 		if (gameRepository.findByUserNameAndGameStatus(request.getUserName(), ACTIVE).isPresent()) {
 			throw new MinesweeperException(String.format("[Minesweeper Service] - Already exists a game for username=%s", request.getUserName()));
 		}
-		List<CellBean> cells = cellService.createCells(request);
+		List<CellBean> cellBeans = cellService.createCells(request);
+		List<Cell> cells = cellService.save(cellBeans);
 		Game game = Game.builder()
 			.gameStatus(ACTIVE)
-			.cells(cellMapper.mapToEntities(cells))
+			.cells(cells)
 			.columns(request.getColumns())
 			.rows(request.getRows())
 			.mines(request.getMines())

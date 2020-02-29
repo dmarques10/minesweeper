@@ -21,12 +21,15 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deviget.minesweeper.bean.CellBean;
 import com.deviget.minesweeper.bean.GameBean;
 import com.deviget.minesweeper.exception.GameOperationNotSupportedException;
 import com.deviget.minesweeper.exception.InvalidPositionException;
+import com.deviget.minesweeper.mapper.CellMapper;
 import com.deviget.minesweeper.repository.CellRepository;
+import com.deviget.minesweeper.repository.model.Cell;
 import com.deviget.minesweeper.repository.model.CellContent;
 import com.deviget.minesweeper.repository.model.CellOperation;
 import com.deviget.minesweeper.request.BoardRequest;
@@ -39,6 +42,7 @@ import com.google.common.collect.Lists;
 @RequiredArgsConstructor
 public class CellServiceImpl implements CellService {
 	private final CellRepository cellRepository;
+	private final CellMapper cellMapper;
 	private final Map<CellOperation, Function<GameOperation, List<CellBean>>> cellOperationFunction = ImmutableMap.of(
 		REVEALED, revealedOperationFunction(),
 		FLAGGED, flaggedOperationFunction(),
@@ -62,6 +66,13 @@ public class CellServiceImpl implements CellService {
 			.orElseThrow(() -> new GameOperationNotSupportedException(gameOperation.getCellOperation()))
 			.getValue()
 			.apply(gameOperation);
+	}
+
+	@Override
+	@Transactional
+	public List<Cell> save(List<CellBean> cellBeans) {
+		final List<Cell> cells = cellMapper.mapToEntities(cellBeans);
+		return cellRepository.saveAll(cells);
 	}
 
 	private List<CellBean> addNumbers(List<CellBean> cells, long rows, long columns) {

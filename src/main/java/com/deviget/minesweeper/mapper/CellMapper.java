@@ -9,4 +9,6 @@ public interface CellMapper {
 	List<Cell> mapToEntities(List<CellBean> cells);
 
 	Cell mapToEntity(CellBean cell);
+
+	CellBean mapToBean(Cell cell);
 }
