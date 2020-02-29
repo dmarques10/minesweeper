@@ -59,6 +59,7 @@ public class GameServiceImpl implements GameService {
 
 	//TODO: check response
 	@Override
+	@Transactional
 	public GameBean play(String userName, PlayRequest request) {
 		GameBean gameBean = gameRepository.findByUserNameAndGameStatus(userName, ACTIVE).map(game -> gameMapper.mapToBean(game))
 			.orElseThrow(() -> new GameNotFoundException(userName));

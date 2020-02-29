@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -37,6 +38,7 @@ import com.deviget.minesweeper.request.GameOperation;
 import com.deviget.minesweeper.service.CellService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @Service
 @RequiredArgsConstructor
@@ -148,7 +150,7 @@ public class CellServiceImpl implements CellService {
 					throw new MineExplodedException(gameOperation.getRow(), gameOperation.getColumn(), gameOperation.getGameBean());
 				}
 
-				List<CellBean> updatedCells = populateMinesAround(cell, gameOperation.getGameBean());
+				List<CellBean> updatedCells = Lists.newArrayList(populateMinesAround(cell, gameOperation.getGameBean()));
 				updatedCells.forEach(updatedCell -> cellRepository.updateCellOperationAndMinesAroundById(REVEALED, updatedCell.getMinesAround(), updatedCell.getId()));
 				return updatedCells;
 			});
@@ -213,7 +215,7 @@ public class CellServiceImpl implements CellService {
 			column.longValue() == cellBean.getColumn().longValue();
 	}
 
-	List<CellBean> populateMinesAround(CellBean cellBean, GameBean gameBean) {
+	Set<CellBean> populateMinesAround(CellBean cellBean, GameBean gameBean) {
 		long row = cellBean.getRow();
 		long column = cellBean.getColumn();
 
@@ -227,13 +229,13 @@ public class CellServiceImpl implements CellService {
 		cellBean.setCellOperation(CellOperation.REVEALED);
 		cellBean.setMinesAround(minesAround);
 
-		List<CellBean> result = Arrays.asList(cellBean);
+		Set<CellBean> result = Sets.newHashSet(cellBean);
 		if (cellBean.getMinesAround().intValue() == 0) {
-			List<CellBean> cellBeans = buildCellsAround(cellBean, gameBean)
+			Set<CellBean> cellBeans = buildCellsAround(cellBean, gameBean)
 				.filter(c -> CellOperation.NONE.equals(c.getCellOperation()))
 				.map(c -> populateMinesAround(c, gameBean))
 				.flatMap(Collection::stream)
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 			result.addAll(cellBeans);
 		}
 
