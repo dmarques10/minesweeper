@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "513c818f-45d2-400f-b431-5d15a992b2d1",
+		"name": "minesweeper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createGame",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userName\": \"diego\",\n\t\"columns\": 10,\n\t\"rows\": 10,\n\t\"mines\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/api/v1/minesweeper/create",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"v1",
+						"minesweeper",
+						"create"
+					]
+				},
+				"description": "CreateGame"
+			},
+			"response": []
+		},
+		{
+			"name": "play",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"column\": 9,\n\t\"row\": 9,\n\t\"cellOperation\": \"REVEALED\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/api/v1/minesweeper/play/diego",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"v1",
+						"minesweeper",
+						"play",
+						"diego"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pause",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:9090/api/v1/minesweeper/diego/pause",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"v1",
+						"minesweeper",
+						"diego",
+						"pause"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resume",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:9090/api/v1/minesweeper/diego/resume",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"v1",
+						"minesweeper",
+						"diego",
+						"resume"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
