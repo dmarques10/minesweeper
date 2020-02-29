@@ -75,8 +75,8 @@ public class GameServiceImpl implements GameService {
 
 			List<CellBean> cellBeans = cellService.operation(gameOperation);
 			if (gameIsFinished(userName)) {
-				final Game game = gameRepository.updateGameStatusByUserName(GameStatus.WON, userName);
-				return gameMapper.mapToBean(game);
+				gameRepository.updateGameStatusByUserName(GameStatus.WON, userName);
+				return gameMapper.mapToBean(gameRepository.findByUserName(userName).orElseThrow(() -> new GameNotFoundException(userName)));
 			}
 
 			//TODO: check response
@@ -84,8 +84,8 @@ public class GameServiceImpl implements GameService {
 			return gameBean;
 		} catch (MineExplodedException e) {
 
-			final Game game = gameRepository.updateGameStatusByUserName(GameStatus.LOST, userName);
-			return gameMapper.mapToBean(game);
+			gameRepository.updateGameStatusByUserName(GameStatus.LOST, userName);
+			return gameMapper.mapToBean(gameRepository.findByUserName(userName).orElseThrow(() -> new GameNotFoundException(userName)));
 		}
 	}
 
@@ -106,6 +106,7 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
+	@Transactional
 	public void pause(String userName) {
 		gameRepository.findByUserNameAndGameStatusNotIn(userName, FINISHED_STATUS)
 			.orElseThrow(() -> new GameNotFoundException(userName));
@@ -114,6 +115,7 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
+	@Transactional
 	public void resume(String userName) {
 		gameRepository.findByUserNameAndGameStatusNotIn(userName, FINISHED_STATUS)
 			.orElseThrow(() -> new GameNotFoundException(userName));
