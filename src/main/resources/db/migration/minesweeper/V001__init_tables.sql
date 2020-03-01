@@ -1,7 +1,7 @@
 CREATE TABLE `games` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-  `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  --`created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  --`last_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `rows_quantity` bigint(11) unsigned NOT NULL,
   `columns_quantity` bigint(11) unsigned NOT NULL,
   `mines_quantity` bigint(11) unsigned NOT NULL,
@@ -12,8 +12,8 @@ CREATE TABLE `games` (
 
 CREATE TABLE `cells` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-  `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  --`created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  --`last_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `game_id` bigint(11) unsigned,
   `row_number` bigint(11) unsigned NOT NULL,
   `col_number` bigint(11) unsigned NOT NULL,
