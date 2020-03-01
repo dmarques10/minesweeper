@@ -21,8 +21,8 @@ ENV JAVA_OPTS="$BASE_JAVA_OPTS $XMS $XMX $METASPACE $ILLEGAL_ACCESS_PERMIT"
 ENV EXTRA_ARGS=""
 
 ARG ARTIFACT_VERSION=latest
-ADD --chown=minesweeper:minesweeper build/libs/minesweeper-${ARTIFACT_VERSION}.jar $WORKSPACE/minesweeper.jar
-ADD --chown=minesweeper:minesweeperservice entrypoint.sh /entrypoint.sh
+ADD --chown=minesweeper:minesweeper build/libs/minesweeper-*.jar $WORKSPACE/minesweeper.jar
+ADD --chown=minesweeper:minesweeper entrypoint.sh /entrypoint.sh
 
 # Expose endpoints on port 8090
 EXPOSE 9090
