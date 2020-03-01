@@ -21,6 +21,7 @@ public class GameBean {
 	private Long rows;
 	private Long columns;
 	private Long mines;
+	private String userName;
 	private GameStatus gameStatus;
 	private List<CellBean> cells;
 }

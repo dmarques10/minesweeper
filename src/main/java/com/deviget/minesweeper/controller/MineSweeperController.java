@@ -35,7 +35,7 @@ public class MineSweeperController {
 	}
 
 	@PostMapping(value = "/play/{userName}", consumes = "application/json", produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity playGame(@Valid @RequestBody PlayRequest request, @PathVariable String userName) {
+	public ResponseEntity<GameBean> playGame(@Valid @RequestBody PlayRequest request, @PathVariable String userName) {
 		return ResponseEntity.ok(gameService.play(userName, request));
 	}
 
