@@ -10,7 +10,6 @@ buildscript {
         javaXVersion = '2.2'
         hibernateVersion = '3.5.6-Final'
         orikaVersion = '1.5.4'
-        flywayVersion = '5.2.1'
         javaXRsVersion = '2.1.1'
         hibernateJava8Version = '5.4.9.Final'
         comSunXmlBindVersion = '2.3.2'
@@ -59,7 +58,6 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: "${apacheCommonsLang3Version}"
     compile group: 'com.google.guava', name: 'guava', version: "${googleGuavaVersion}"
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: "${javaXRsVersion}"
-    compile group: 'org.flywaydb', name: 'flyway-core', version: "${flywayVersion}"
     compile group: 'ma.glasnost.orika', name: 'orika-core', version: "${orikaVersion}"
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
     compile group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.2.33'
