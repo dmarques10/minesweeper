@@ -36,6 +36,7 @@ import com.deviget.minesweeper.repository.model.CellOperation;
 import com.deviget.minesweeper.request.BoardRequest;
 import com.deviget.minesweeper.request.GameOperation;
 import com.deviget.minesweeper.service.CellService;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -45,7 +46,7 @@ import com.google.common.collect.Sets;
 public class CellServiceImpl implements CellService {
 	private final CellRepository cellRepository;
 	private final CellMapper cellMapper;
-	private final Map<CellOperation, Function<GameOperation, List<CellBean>>> cellOperationFunction = ImmutableMap.of(
+	private Map<CellOperation, Function<GameOperation, List<CellBean>>> cellOperationFunction = ImmutableMap.of(
 		REVEALED, revealedOperationFunction(),
 		FLAGGED, flaggedOperationFunction(),
 		QUESTION_MARKED, questionMarkedFunction());
@@ -77,7 +78,8 @@ public class CellServiceImpl implements CellService {
 		return cellRepository.saveAll(cells);
 	}
 
-	private List<CellBean> addNumbers(List<CellBean> cells, long rows, long columns) {
+	@VisibleForTesting
+	protected List<CellBean> addNumbers(List<CellBean> cells, long rows, long columns) {
 		List<CellBean> alreadyCalculatedMines = Lists.newArrayList();
 		for (long i = 1; i <= rows; i++) {
 			for (long j = 1; j <= columns; j++) {
@@ -97,7 +99,8 @@ public class CellServiceImpl implements CellService {
 		return cells;
 	}
 
-	private List<CellBean> createMines(long rows, long columns, long minesQuantity) {
+	@VisibleForTesting
+	protected List<CellBean> createMines(long rows, long columns, long minesQuantity) {
 		List<Pair<Long, Long>> alreadyOccupiedCells = Lists.newArrayList();
 
 		LongStream.range(1, minesQuantity + 1).forEach(i -> {

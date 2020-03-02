@@ -15,7 +15,6 @@ import com.deviget.minesweeper.bean.CellBean;
 import com.deviget.minesweeper.bean.GameBean;
 import com.deviget.minesweeper.exception.GameNotFoundException;
 import com.deviget.minesweeper.exception.MinesweeperException;
-import com.deviget.minesweeper.mapper.CellMapper;
 import com.deviget.minesweeper.mapper.GameMapper;
 import com.deviget.minesweeper.repository.GameRepository;
 import com.deviget.minesweeper.repository.model.Cell;
@@ -35,7 +34,6 @@ public class GameServiceImpl implements GameService {
 
 	private final GameRepository gameRepository;
 	private final CellService cellService;
-	private final CellMapper cellMapper;
 	private final GameMapper gameMapper;
 
 	@Override
