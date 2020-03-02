@@ -18,4 +18,8 @@ public class GameBeanMother {
 			.cells(Lists.newArrayList(CellBeanMother.mine()))
 			.build();
 	}
+
+	public static GameBean empty() {
+		return GameBean.builder().build();
+	}
 }
